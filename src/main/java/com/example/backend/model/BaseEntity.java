@@ -1,8 +1,11 @@
 package com.example.backend.model;
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@Data
 public class BaseEntity {
 
     @Id

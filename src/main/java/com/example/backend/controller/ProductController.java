@@ -1,9 +1,13 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.ProductRequestDto;
+import com.example.backend.dto.ProductResponseDto;
 import com.example.backend.model.Product;
 import com.example.backend.service.ProductService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,11 +21,25 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product createdProduct = productService.createProduct(product);
-        return ResponseEntity.ok(createdProduct);
+    @GetMapping("/hello")
+    public void hello() {
+        System.out.println("JAI SHREE SITA RAM");
+        System.out.println("JAI BAJRANG BALI");
+        return;
     }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponseDto> createProduct(
+            @RequestPart("product") ProductRequestDto productRequest,
+            @RequestPart("image") MultipartFile imageFile
+    ) {
+
+        ProductResponseDto response = productService.createProduct(productRequest, imageFile);
+
+        return ResponseEntity.ok(response);
+    }
+
+
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {

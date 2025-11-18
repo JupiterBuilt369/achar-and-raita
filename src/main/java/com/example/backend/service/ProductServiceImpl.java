@@ -1,8 +1,12 @@
 package com.example.backend.service;
 
+import com.example.backend.adapter.ProductAdapter;
+import com.example.backend.dto.ProductRequestDto;
+import com.example.backend.dto.ProductResponseDto;
 import com.example.backend.model.Product;
 import com.example.backend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -10,14 +14,42 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductAdapter productAdapter;
+    private final CloudinaryService  cloudinaryService;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository,
+                              ProductAdapter productAdapter,
+                              CloudinaryService cloudinaryService) {
         this.productRepository = productRepository;
+        this.productAdapter = productAdapter;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public ProductResponseDto createProduct(ProductRequestDto product , MultipartFile file) {
+
+
+        String imageUrl = cloudinaryService.uploadFile(file);
+        Product entityProduct = productAdapter.productRequestDtoToProductEntity(product);
+        entityProduct.setImageUrl(imageUrl);
+
+        Product createdProduct = productRepository.save(entityProduct);
+
+        // 2. Build the response DTO
+        return ProductResponseDto.builder()
+                .id(createdProduct.getId())
+                .name(createdProduct.getName())
+                .description(createdProduct.getDescription())
+                .price(createdProduct.getPrice())
+                .stock(createdProduct.getStock())
+                .imageUrl(createdProduct.getImageUrl())
+                .categoryName(createdProduct.getCategory().getName())
+                .regionName(createdProduct.getRegion().getName())
+                .createdAt(createdProduct.getCreatedAt())
+                .updatedAt(createdProduct.getUpdatedAt())
+                .build();
+
+
     }
 
     @Override

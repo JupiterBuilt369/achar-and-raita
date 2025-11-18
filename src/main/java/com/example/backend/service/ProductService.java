@@ -1,13 +1,16 @@
 package com.example.backend.service;
 
 
+import com.example.backend.dto.ProductRequestDto;
+import com.example.backend.dto.ProductResponseDto;
 import com.example.backend.model.Product;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface ProductService {
 
-    Product createProduct(Product product);
+    ProductResponseDto createProduct(ProductRequestDto product , MultipartFile file);
 
     List<Product> getAllProducts();
 
