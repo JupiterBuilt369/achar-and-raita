@@ -70,7 +70,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted successfully.");
+        return ResponseEntity.ok("Product deleted successfully with ID : " + id);
     }
 
     @GetMapping("/category/{categoryId}")

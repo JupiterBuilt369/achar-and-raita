@@ -5,7 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,7 +23,7 @@ public class User extends BaseEntity {
 
     private String phone;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole role; // CUSTOMER, ADMIN
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false)
+//    private UserRole role; // CUSTOMER, ADMIN
 }

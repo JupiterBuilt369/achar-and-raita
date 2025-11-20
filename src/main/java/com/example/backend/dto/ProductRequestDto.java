@@ -10,5 +10,6 @@ public class ProductRequestDto {
     private Integer stock;
     private Long categoryId;
     private Long regionId;
+    private Long sellerId;
 //    private String imageUrl;
 }
