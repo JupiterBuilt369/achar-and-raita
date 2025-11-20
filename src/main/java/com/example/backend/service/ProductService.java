@@ -1,29 +1,29 @@
 package com.example.backend.service;
 
-
 import com.example.backend.dto.ProductRequestDto;
 import com.example.backend.dto.ProductResponseDto;
-import com.example.backend.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ProductResponseDto createProduct(ProductRequestDto product , MultipartFile file);
+    ProductResponseDto createProduct(ProductRequestDto dto, List<MultipartFile> files);
 
-    List<Product> getAllProducts();
+    ProductResponseDto updateProduct(Long id, ProductRequestDto dto, List<MultipartFile> files);
 
-    Product getProductById(Long id);
-
-    ProductResponseDto updateProduct(Long id, ProductRequestDto product , MultipartFile file);
+    ProductResponseDto getProduct(Long id);
 
     void deleteProduct(Long id);
 
-    // Optional filtering/search
-    List<Product> getProductsByCategory(Long categoryId);
+    // Pagination & Filtering
+    Page<ProductResponseDto> getAllProducts(Pageable pageable);
 
-    List<Product> getProductsByRegion(Long regionId);
+    Page<ProductResponseDto> getProductsByCategory(Long categoryId, Pageable pageable);
 
-    List<Product> searchProductsByName(String name);
+    Page<ProductResponseDto> getProductsByRegion(Long regionId, Pageable pageable);
+
+    Page<ProductResponseDto> searchProductsByName(String name, Pageable pageable);
 }

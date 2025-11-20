@@ -1,7 +1,8 @@
-package com.example.backend.model;
+package com.example.backend.model; // Better in an enums package
 
 public enum OrderStatus {
-    PLACED,
+    PENDING,
+    CONFIRMED,
     SHIPPED,
     DELIVERED,
     CANCELLED

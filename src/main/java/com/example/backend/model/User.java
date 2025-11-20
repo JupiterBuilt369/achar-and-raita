@@ -19,11 +19,10 @@ public class User extends BaseEntity {
     private String email;
 
     @Column(nullable = false)
-    private String password; // hashed password (BCrypt)
+    private String password; // Storing plain text for MVP (Upgrade to BCrypt later)
 
+    @Column(nullable = false)
     private String phone;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
-//    private UserRole role; // CUSTOMER, ADMIN
+    // Future: @Enumerated(EnumType.STRING) private UserRole role;
 }

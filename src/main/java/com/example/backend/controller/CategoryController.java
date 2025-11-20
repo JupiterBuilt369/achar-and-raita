@@ -3,7 +3,9 @@ package com.example.backend.controller;
 import com.example.backend.dto.CategoryRequestDto;
 import com.example.backend.dto.CategoryResponseDto;
 import com.example.backend.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +20,10 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryResponseDto> createCategory(
-            @RequestBody CategoryRequestDto request) {
+            @Valid @RequestBody CategoryRequestDto request) {
 
-        return ResponseEntity.ok(categoryService.createCategory(request));
+        CategoryResponseDto response = categoryService.createCategory(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -36,7 +39,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> updateCategory(
             @PathVariable Long id,
-            @RequestBody CategoryRequestDto request) {
+            @Valid @RequestBody CategoryRequestDto request) {
 
         return ResponseEntity.ok(categoryService.updateCategory(id, request));
     }
@@ -44,6 +47,6 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok("Category deleted");
+        return ResponseEntity.ok("Category deleted successfully");
     }
 }

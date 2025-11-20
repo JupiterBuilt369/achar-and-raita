@@ -5,7 +5,7 @@ import com.example.backend.dto.ProductResponseDto;
 import com.example.backend.model.Product;
 
 public interface ProductAdapter {
-
-    Product productRequestDtoToProductEntity(ProductRequestDto productRequestDto);
-    ProductResponseDto productEntityToProductResponseDto(Product product);
+    ProductResponseDto toDto(Product product);
+    Product toEntity(ProductRequestDto dto);
+    void updateEntity(Product product, ProductRequestDto dto);
 }

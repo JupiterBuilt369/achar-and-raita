@@ -3,13 +3,12 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "cart_items")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Entity
+@Table(name = "cart_items")
 public class CartItem extends BaseEntity {
 
     @ManyToOne
@@ -20,7 +19,9 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private Integer quantity;
+    private int quantity;
 
-    private Double price;
+    private double price;
+
+    private double totalPrice;
 }

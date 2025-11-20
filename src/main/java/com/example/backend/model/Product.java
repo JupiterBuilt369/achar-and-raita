@@ -2,17 +2,18 @@ package com.example.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "products")
-@Getter
-@Setter
-@Builder
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Table(name = "products")
 public class Product extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String name;
 
     @Column(columnDefinition = "TEXT")
@@ -21,23 +22,29 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Double price;
 
-    private String imageUrl;
-
     @Column(nullable = false)
-    private Integer stock;
+    private int stock;
 
-    // Many products belong to one category
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 
-
-    // Many products belong to one region
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
-    }
+
+    // ✅ MULTI-IMAGE SUPPORT
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_url")
+    @Builder.Default
+    private List<String> imageUrls = new ArrayList<>();
+
+    // ✅ CONCURRENCY CONTROL
+    @Version
+    private Long version;
+}

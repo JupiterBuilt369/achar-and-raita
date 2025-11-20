@@ -5,7 +5,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "sellers")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,19 +16,28 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String shopName;
+
+    @Column(nullable = false)
     private String ownerName;
 
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
     private String businessAddress;
 
     private String gstNumber;
     private String panNumber;
     private String bankDetails;
 
-    private boolean verified; // Admin verifies sellers
+    @Builder.Default
+    private boolean verified = false;
 }

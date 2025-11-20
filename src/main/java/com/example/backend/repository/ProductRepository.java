@@ -1,16 +1,18 @@
 package com.example.backend.repository;
 
 import com.example.backend.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findByCategoryId(Long categoryId);
 
-    List<Product> findByRegionId(Long regionId);
+    // Return Pages instead of Lists for performance
+    Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
 
-    List<Product> findByNameContainingIgnoreCase(String name);
+    Page<Product> findByRegionId(Long regionId, Pageable pageable);
+
+    Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

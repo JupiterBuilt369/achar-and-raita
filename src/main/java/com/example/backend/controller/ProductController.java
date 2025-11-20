@@ -2,8 +2,13 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.ProductRequestDto;
 import com.example.backend.dto.ProductResponseDto;
-import com.example.backend.model.Product;
 import com.example.backend.service.ProductService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,81 +18,65 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
-    @GetMapping("/hello")
-    public void hello() {
-        System.out.println("JAI SHREE SITA RAM");
-        System.out.println("JAI BAJRANG BALI");
-        return;
-    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponseDto> createProduct(
-            @RequestPart("product") ProductRequestDto productRequest,
-            @RequestPart("image") MultipartFile imageFile
-    ) {
+            @Valid @RequestPart("product") ProductRequestDto productRequest,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        ProductResponseDto response = productService.createProduct(productRequest, imageFile);
-
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(
+                productService.createProduct(productRequest, images),
+                HttpStatus.CREATED
+        );
     }
 
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponseDto> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestPart("product") ProductRequestDto productRequest,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+
+        return ResponseEntity.ok(productService.updateProduct(id, productRequest, images));
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProduct(id));
+    }
 
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<Page<ProductResponseDto>> getAllProducts(
+            @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
+        return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Product product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<Page<ProductResponseDto>> getProductsByCategory(
+            @PathVariable Long categoryId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(productService.getProductsByCategory(categoryId, pageable));
     }
 
-    @PutMapping(
-            value = "/{id}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    public ResponseEntity<ProductResponseDto> updateProduct(
-            @PathVariable Long id,
-            @RequestPart("product") ProductRequestDto productRequest,
-            @RequestPart(value = "image", required = false) MultipartFile file
-    ) {
-        ProductResponseDto response = productService.updateProduct(id, productRequest, file);
-        return ResponseEntity.ok(response);
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductResponseDto>> searchProducts(
+            @RequestParam String name,
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(productService.searchProductsByName(name, pageable));
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.ok("Product deleted successfully with ID : " + id);
-    }
-
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long categoryId) {
-        List<Product> products = productService.getProductsByCategory(categoryId);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/region/{regionId}")
-    public ResponseEntity<List<Product>> getProductsByRegion(@PathVariable Long regionId) {
-        List<Product> products = productService.getProductsByRegion(regionId);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchProducts(@RequestParam String name) {
-        List<Product> products = productService.searchProductsByName(name);
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok("Product deleted successfully!");
     }
 }
